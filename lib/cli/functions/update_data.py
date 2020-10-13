@@ -13,13 +13,15 @@ daily_url = "https://www.cryptodatadownload.com/cdd/Coinbase_BTCUSD_d.csv"
 async def save_url_to_csv(url: str, date_format: str, file_name: str):
     csv = pd.read_csv(url, header=1)
     csv = csv.dropna(thresh=2)
+    if len(csv.columns)==9:
+        csv=csv.drop(csv.columns[0], 1)
+
     csv.columns = ['Date', 'Symbol', 'Open', 'High', 'Low', 'Close', 'VolumeFrom', 'VolumeTo']
     csv['Date'] = pd.to_datetime(csv['Date'], format=date_format)
     csv['Date'] = csv['Date'].dt.strftime(final_date_format)
 
     final_path = os.path.join('data', 'input', file_name)
     csv.to_csv(final_path, index=False)
-
     return csv
 
 
